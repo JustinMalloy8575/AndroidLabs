@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello_message">Bonjour World!</string>
+    <string name="ButtonText">Bonjour CLICK HERE</string>
+    <string name="LookGui">Bonjour Look at my GUI</string>
+    <string name="CheckBox">Bonjour Check this out!</string>
+    <string name="SwitchText">Bonjour Switched on/off</string>
+    <string name="ToastMessage">Bonjour Here is more information</string>
+    <string name="undotxt">Bonjour Undo</string>
+</resources>

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">AndroidLabs</string>
+
+    <string name="hello_message">Hello World!</string>
+
+    <string name="ButtonText">CLICK HERE</string>
+
+    <string name="LookGui">Look at my GUI</string>
+
+    <string name="CheckBox">Check this out!</string>
+
+    <string name="SwitchText">Switched on/off</string>
+
+    <string name="ToastMessage">Here is more information</string>
+
+    <string name="undotxt">Undo</string>
+</resources>
