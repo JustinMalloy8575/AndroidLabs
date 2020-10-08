@@ -53,6 +53,6 @@
         android:layout_below="@+id/imageButton"
         android:layout_alignParentLeft="true"
         android:hint="Type Here"
-        android:inputType="textPersonName" />
+        android:inputType="textCapWords" />
 
 </RelativeLayout>

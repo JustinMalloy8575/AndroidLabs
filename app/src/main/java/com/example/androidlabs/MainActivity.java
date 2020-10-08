@@ -1,65 +1,64 @@
 package com.example.androidlabs;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.Switch;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.snackbar.Snackbar;
-
+import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
+    EditText email,password;
+    Button button;
+    SharedPreferences sp;
+    String emailStr,passStr;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_relative);
-        final Button button = findViewById(R.id.button3);
+        setContentView(R.layout.activity_main);
+
+        email = findViewById(R.id.editTextTextEmailAddress2);
+        password = findViewById(R.id.editTextTextPassword);
+        button = findViewById(R.id.button);
+
+
+
+        sp = getSharedPreferences("MyUserPrefs", Context.MODE_PRIVATE );
         button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Context context = getApplicationContext();
-                CharSequence text = getString(R.string.ToastMessage);
-                int duration = Toast.LENGTH_LONG;
-
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
-            }
-
-
-        });
-
-        final Switch s = findViewById(R.id.on_off_switch);
-        s.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(final CompoundButton cb, final boolean b) {
+            public void onClick(View v) {
 
-                if (b) {
-                    Snackbar snackon = Snackbar.make(s, "The switch is now on", Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            cb.setChecked(!b);
-                        }
-                    });
-                    snackon.show();
+                Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+                startActivity(intent);
+                emailStr = email.getText().toString();
+                passStr = password.getText().toString();
 
-                } else {
+                SharedPreferences.Editor editor =sp.edit();
 
-                    Snackbar snackoff = Snackbar.make(s, "The switch is now off", Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            cb.setChecked(!b);
-                        }
-                    });
-                    snackoff.show();
+                editor.putString("email", emailStr );
+                editor.putString("password", passStr);
+                editor.commit();
 
-                }
+
 
             }
         });
+
+
     }
+    public void onPause(){
+        super.onPause();
+        SharedPreferences sp = getApplicationContext().getSharedPreferences("MyUserPrefs", Context.MODE_PRIVATE);
+        String emailS = sp.getString("email", "");
+        String passwordS = sp.getString("password", " ");
+        email.setText(emailS);
+        password.setText(passwordS);
+    }
+
+
 }

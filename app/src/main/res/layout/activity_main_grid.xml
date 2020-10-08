@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:hint="Type Here"
-        android:inputType="textPersonName" />
+        android:inputType="textCapWords" />
 
 
 </GridLayout>
