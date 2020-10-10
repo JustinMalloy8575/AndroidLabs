@@ -52,14 +52,25 @@ public class ProfileActivity extends AppCompatActivity {
             b.setImageBitmap(imageBitmap);
         }
     }
-    public void onStart(){
+    protected void onDestroy(){
+        super.onDestroy();
+        Log.e(ACTIVITY_NAME, "IN FUNCTION"+ "onDestroy()");
+    }
+    protected void onStop(){
+        super.onStop();
+        Log.e(ACTIVITY_NAME, "IN FUNCTION"+ "onStop()");
+    }
+    protected void onStart(){
         super.onStart();
         Log.e(ACTIVITY_NAME, "IN FUNCTION"+ "onStart()");
     }
 
-    public void onResume(){
+    protected void onResume(){
         super.onResume();
         Log.e(ACTIVITY_NAME, "IN FUNCTION"+ "onResume()");
     }
+
+
+
 
 }
