@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import static com.example.androidlabs.ProfileActivity.ACTIVITY_NAME;
+
 public class MainActivity extends AppCompatActivity {
     EditText email,password;
     Button button;
@@ -28,25 +30,21 @@ public class MainActivity extends AppCompatActivity {
         button = findViewById(R.id.button);
 
 
-
-
-
         sp = getSharedPreferences("MyUserPrefs", Context.MODE_PRIVATE );
+        SharedPreferences sp = getApplicationContext().getSharedPreferences("MyUserPrefs", Context.MODE_PRIVATE);
+        String emailData = sp.getString("email", "");
+        String passwordData = sp.getString("password", " ");
+
+        email.setText(emailData);
+        password.setText(passwordData);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
                 startActivity(intent);
-                emailStr = email.getText().toString();
-                passStr = password.getText().toString();
 
-                SharedPreferences.Editor editor =sp.edit();
-
-                editor.putString("email", emailStr );
-                editor.putString("password", passStr);
-                editor.commit();
-
+                intent.putExtra("email", email.getText());
 
 
             }
@@ -56,11 +54,20 @@ public class MainActivity extends AppCompatActivity {
     }
     public void onPause(){
         super.onPause();
+        Log.e(ACTIVITY_NAME, "IN FUNCTION"+ "onPause()");
         SharedPreferences sp = getApplicationContext().getSharedPreferences("MyUserPrefs", Context.MODE_PRIVATE);
         String emailS = sp.getString("email", "");
         String passwordS = sp.getString("password", " ");
         email.setText(emailS);
         password.setText(passwordS);
+        emailStr = email.getText().toString();
+        passStr = password.getText().toString();
+
+        SharedPreferences.Editor editor =sp.edit();
+
+        editor.putString("email", emailStr );
+        editor.putString("password", passStr);
+        editor.commit();
     }
 
 

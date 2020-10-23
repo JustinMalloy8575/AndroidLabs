@@ -107,6 +107,7 @@
         android:layout_weight="1"
         android:src="@android:drawable/picture_frame"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -118,6 +119,19 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Click the button above to take a picture" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/buttonchat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Go to chat!" />
 
     </LinearLayout>
 </LinearLayout>

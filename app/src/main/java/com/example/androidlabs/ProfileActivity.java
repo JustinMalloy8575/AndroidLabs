@@ -17,6 +17,7 @@ import android.widget.TextView;
 public class ProfileActivity extends AppCompatActivity {
     public static final String ACTIVITY_NAME = "PROFILE_ACTIVITY";
     static final int  CAMERA_REQUEST_CODE = 1001;
+    Button chat;
     ImageButton b;
     TextView tv;
     @Override
@@ -25,12 +26,23 @@ public class ProfileActivity extends AppCompatActivity {
         Log.e(ACTIVITY_NAME, "IN FUNCTION"+ "onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
+        chat = findViewById(R.id.buttonchat);
         tv = findViewById(R.id.editTextTextPersonName2);
         b = findViewById(R.id.imageButtonS);
         SharedPreferences sp = getApplicationContext().getSharedPreferences("MyUserPrefs", Context.MODE_PRIVATE);
         String e = sp.getString("email", "");
         tv.setText(e);
+
+
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentchat = new Intent(ProfileActivity.this,ChatRoomActivity.class);
+                startActivity(intentchat);
+            }
+        });
+
+
 
         b.setOnClickListener(new View.OnClickListener() {
             @Override
