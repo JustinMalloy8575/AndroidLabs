@@ -20,6 +20,7 @@ public class ProfileActivity extends AppCompatActivity {
     Button chat;
     ImageButton b;
     TextView tv;
+    Button weather;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -29,6 +30,7 @@ public class ProfileActivity extends AppCompatActivity {
         chat = findViewById(R.id.buttonchat);
         tv = findViewById(R.id.editTextTextPersonName2);
         b = findViewById(R.id.imageButtonS);
+        weather = findViewById(R.id.buttonW);
         SharedPreferences sp = getApplicationContext().getSharedPreferences("MyUserPrefs", Context.MODE_PRIVATE);
         String e = sp.getString("email", "");
         tv.setText(e);
@@ -40,6 +42,15 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent intentchat = new Intent(ProfileActivity.this,ChatRoomActivity.class);
                 startActivity(intentchat);
             }
+        });
+
+        weather.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intentweather = new Intent(ProfileActivity.this,WeatherForecast.class);
+                startActivity(intentweather);
+            }
+
         });
 
 

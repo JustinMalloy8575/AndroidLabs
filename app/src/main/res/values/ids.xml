@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="weather_icon" type="id" />
+    <item name="current_temp" type="id" />
+    <item name="min_temp" type="id" />
+    <item name="max_temp" type="id" />
+    <item name="UV" type="id" />
+    <item name="prog_bar" type="id" />
+</resources>
