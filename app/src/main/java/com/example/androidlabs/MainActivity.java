@@ -6,71 +6,70 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import static com.example.androidlabs.ProfileActivity.ACTIVITY_NAME;
+import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
-    EditText email,password;
-    Button button;
-    SharedPreferences sp;
-    String emailStr,passStr;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_lab3_linear);
 
-        email = findViewById(R.id.editTextTextEmailAddress2);
-        password = findViewById(R.id.editTextTextPassword);
-        button = findViewById(R.id.button);
+        SharedPreferences prefs = getSharedPreferences("FileName", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
 
+        String email = prefs.getString("email", "");
+        EditText typeField = findViewById(R.id.email);
+        typeField.setText(email);
 
-        sp = getSharedPreferences("MyUserPrefs", Context.MODE_PRIVATE );
-        SharedPreferences sp = getApplicationContext().getSharedPreferences("MyUserPrefs", Context.MODE_PRIVATE);
-        String emailData = sp.getString("email", "");
-        String passwordData = sp.getString("password", " ");
+        //final Button button = findViewById(R.id.button);
+        //button.setOnClickListener(new View.OnClickListener() {
+         //   public void onClick(View v) {
+         //       Toast toast = Toast.makeText(getApplicationContext(),
+         //               getResources().getString(R.string.toast_message), Toast.LENGTH_LONG);
+         //       toast.show(); }
+        //});
 
-        email.setText(emailData);
-        password.setText(passwordData);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
+       // Switch switcher = findViewById(R.id.switcher);
+        //TextView myTextView = findViewById(R.id.switcher);
+        //switcher.setOnCheckedChangeListener( (whatClicked, newState) -> {
+         //   Snackbar.make(myTextView,getResources().getString(R.string.switch_message) + newState, Snackbar.LENGTH_SHORT).setAction( "Undo", click -> switcher.setChecked(!newState)).show();
+        //});
+
+        final Button login = findViewById(R.id.login);
+        login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
-                startActivity(intent);
-
-                intent.putExtra("email", email.getText());
-
+                Intent goToProfile = new Intent(MainActivity.this, ProfileActivity.class);
+                goToProfile.putExtra("EMAIL", email);
+                startActivity(goToProfile);
 
             }
         });
-
-
     }
-    public void onPause(){
+
+    @Override
+    protected void onPause() {
         super.onPause();
-        Log.e(ACTIVITY_NAME, "IN FUNCTION"+ "onPause()");
-        SharedPreferences sp = getApplicationContext().getSharedPreferences("MyUserPrefs", Context.MODE_PRIVATE);
-        String emailS = sp.getString("email", "");
-        String passwordS = sp.getString("password", " ");
-        email.setText(emailS);
-        password.setText(passwordS);
-        emailStr = email.getText().toString();
-        passStr = password.getText().toString();
+        EditText typeField = findViewById(R.id.email);
+        saveSharedPrefs(typeField.getText().toString());
+    }
 
-        SharedPreferences.Editor editor =sp.edit();
-
-        editor.putString("email", emailStr );
-        editor.putString("password", passStr);
+    private void saveSharedPrefs(String stringToSave){
+        SharedPreferences prefs = getSharedPreferences("FileName", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("email", stringToSave);
         editor.commit();
     }
 
-
-
-
 }
+
+
+

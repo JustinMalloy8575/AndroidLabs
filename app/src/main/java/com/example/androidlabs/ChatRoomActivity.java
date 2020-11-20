@@ -1,175 +1,269 @@
 package com.example.androidlabs;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 
 public class ChatRoomActivity extends AppCompatActivity {
-    public ArrayList<Message> elements = new ArrayList<>();
-    ListAdapter listAdapter = new MessageListAdapter();
+
+
+    public ArrayList<Message> messages = new ArrayList<>();
+    ListAdapter la = new myListAdapter();
     SQLiteDatabase db;
-    public ChatRoomActivity() {
-    }
+
+    public static final String ITEM_SELECTED = "ITEM";
+    public static final String ITEM_POSITION = "POSITION";
+    public static final String ITEM_ID = "ID";
+    public static final String ITEM_TYPE = "TYPE";
+    public DetailsFragment dFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_chat_room);
-        final ListView mListView = (ListView) findViewById(R.id.messageList);
-        final EditText editt = findViewById(R.id.messageeneter);
+
+       final ListView myList = (ListView) findViewById(R.id.lv);
+        myList.setItemsCanFocus(false);
+        myList.setAdapter(la);
+        EditText et = findViewById(R.id.textGoesHere);
         Button send = findViewById(R.id.send);
-        Button receive = findViewById(R.id.receive);
-        mListView.setAdapter(listAdapter);
-        mListView.setItemsCanFocus(false);
+        Button receive = findViewById(R.id.recieve);
+        Boolean isTablet =  findViewById(R.id.fltablet) != null;
 
 
 
-        send.setOnClickListener((View.OnClickListener) v -> {
 
-            EditText text = (EditText)findViewById(R.id.messageeneter);
-            ContentValues newRowValues = new ContentValues();
-            newRowValues.put(DataBaseHelper.COLUMN_MESSAGES, text.getText().toString() );
-            newRowValues.put(DataBaseHelper.COLUMN_SENDER, "send");
-            long newID = db.insert(DataBaseHelper.MESSAGES, DataBaseHelper.COLUMN_MESSAGES, newRowValues);
-            elements.add(new Message(newID, text.getText().toString(), "send"));
-            ((MessageListAdapter) listAdapter).notifyDataSetChanged();
-            editt.setText("");
-        });
+        myList.setOnItemClickListener( (list, view, pos, id) -> {
+                    //Create a bundle to pass data to the new fragment
+                    Bundle dataToPass = new Bundle();
+                    dataToPass.putString(ITEM_SELECTED, messages.get(pos).getText() );
+                    Log.e("ChatRoomActivity", "Text: " +messages.get(pos).getText());
+                    dataToPass.putInt(ITEM_POSITION, pos);
+                    dataToPass.putLong(ITEM_ID, id);
+                    dataToPass.putString(ITEM_TYPE, messages.get(pos).getType());
+                    Log.e("ChatRoomActivity", "Type: " + messages.get(pos).getType());
+                     Log.e("ChatRoomActivity", "Tablet? " + isTablet);
+            if(isTablet)
+                    {
+                        dFragment = new DetailsFragment(); //add a DetailFragment
+                        dFragment.setArguments( dataToPass ); //pass it a bundle for information
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.fltablet, dFragment) //Add the fragment in FrameLayout
+                                .commit(); //actually load the fragment. Calls onCreate() in DetailFragment
+                    }
+                    else //isPhone
+                    {
+                        Intent nextActivity = new Intent(ChatRoomActivity.this, EmptyActivity.class);
+                        nextActivity.putExtras(dataToPass); //send data to next activity
+                        startActivity(nextActivity); //make the transition
+                    }
 
-        receive.setOnClickListener((View.OnClickListener) v -> {
 
-            EditText text = (EditText)findViewById(R.id.messageeneter);
-            ContentValues newRowValues = new ContentValues();
-            newRowValues.put(DataBaseHelper.COLUMN_MESSAGES, text.getText().toString() );
-            newRowValues.put(DataBaseHelper.COLUMN_SENDER, "receive");
-            long newID = db.insert(DataBaseHelper.MESSAGES, DataBaseHelper.COLUMN_MESSAGES, newRowValues);
-            elements.add(new Message(newID, text.getText().toString(), "receive" ));
-            ((MessageListAdapter) listAdapter).notifyDataSetChanged();
-            editt.setText("");
-        });
+                });
 
-
-
-        mListView.setOnItemLongClickListener( (parent, view, pos, id) -> {
+        myList.setOnItemLongClickListener( (parent, view, pos, id) -> {
 
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
             alertDialogBuilder.setTitle("Do you want to delete this?")
-                    .setMessage("The Selected Row is: "+pos+"\n"+"The database id: "+ getItemId(pos))
-                    .setPositiveButton("Yes", (click, arg) -> {deleteMessage((Message) listAdapter.getItem(pos));elements.remove(pos); ((MessageListAdapter) listAdapter).notifyDataSetChanged();
-                    })
+                    .setMessage("The Selected Row is: "+pos+"\n"+"The database id: "+ la.getItemId(pos))
+                    .setPositiveButton("Yes", (click, arg) -> { db.delete(MyOpener.TABLE_NAME,MyOpener.COL_ID + "= ?", new String[] {Long.toString(la.getItemId(pos))});messages.remove(pos);((myListAdapter) la).notifyDataSetChanged();
+                        if (isTablet){
+                            getSupportFragmentManager().beginTransaction().remove(dFragment).commit();
+                        }})
                     .setNegativeButton("No", (click, arg) -> {  })
                     .create().show();
+
             return true ;
 
         });
+
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                EditText text = (EditText)findViewById(R.id.textGoesHere);
+                ContentValues newRowValues = new ContentValues();
+
+                newRowValues.put(MyOpener.COL_MESSAGE, text.getText().toString() );
+                newRowValues.put(MyOpener.COL_TYPE, "send");
+
+                long newID = db.insert(MyOpener.TABLE_NAME, MyOpener.COL_MESSAGE, newRowValues);
+                messages.add(new Message("send", text.getText().toString(), newID ));
+                et.setText("");
+                ((myListAdapter) la).notifyDataSetChanged();
+            }
+        });
+        receive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText text = (EditText)findViewById(R.id.textGoesHere);
+                ContentValues newRowValues = new ContentValues();
+
+                newRowValues.put(MyOpener.COL_MESSAGE, text.getText().toString() );
+                newRowValues.put(MyOpener.COL_TYPE, "receive");
+                long newID = db.insert(MyOpener.TABLE_NAME, MyOpener.COL_MESSAGE, newRowValues);
+
+                messages.add(new Message("receive", text.getText().toString(), newID));
+                et.setText("");
+                ((myListAdapter) la).notifyDataSetChanged();
+            }
+        });
+
         loadDataFromDatabase();
+    }
 
+    private void loadDataFromDatabase() {
+        MyOpener dbOpener = new MyOpener(this);
+        db = dbOpener.getWritableDatabase();
+
+            String [] columns = {MyOpener.COL_ID, MyOpener.COL_TYPE, MyOpener.COL_MESSAGE};
+
+            Cursor results = db.query(false, MyOpener.TABLE_NAME, columns, null, null, null, null, null, null);
+
+
+
+            int typeColumnIndex = results.getColumnIndex(MyOpener.COL_TYPE);
+            int messageColumnIndex = results.getColumnIndex(MyOpener.COL_MESSAGE);
+            int idColIndex = results.getColumnIndex(MyOpener.COL_ID);
+
+            while (results.moveToNext()) { //starts at -1
+                String type = results.getString(typeColumnIndex);
+                String message = results.getString(messageColumnIndex);
+                long id = results.getLong(idColIndex);
+                messages.add(new Message(type, message, id));
+
+            }
+
+        printCursor(results, db.getVersion());
 
     }
 
-    public long getItemId(int position) {
-        return elements.get(position).getId();
+    class myListAdapter extends BaseAdapter {
+
+
+        @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+        }
+        @Override
+        public int getCount() {
+            return messages.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return messages.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return messages.get(position).getId();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            LayoutInflater inflater = getLayoutInflater();
+            View newView;
+
+            if (messages.get(position).getType().equals("receive")) {
+                newView = inflater.inflate(R.layout.activity_chat_room_receive, parent, false);
+                TextView tView = newView.findViewById(R.id.chatText);
+                tView.setText(messages.get(position).getText());
+                ImageButton img = newView.findViewById(R.id.sender);
+            }
+            else{
+                newView = inflater.inflate(R.layout.activity_chat_room_send, parent, false);
+                TextView tView = newView.findViewById(R.id.chatText);
+                tView.setText(messages.get(position).getText());
+                ImageButton img = newView.findViewById(R.id.sender);
+            }
+            return newView;
+
+        }
     }
 
+    class Message {
 
-
-    public class MessageListAdapter extends BaseAdapter {
-
-
-            @Override
-            public void notifyDataSetChanged() {
-                super.notifyDataSetChanged();
-            }
-
-            @Override
-            public int getCount() {
-                return elements.size();
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return elements.get(position);
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return elements.get(position).getId();
-            }
-
-           @Override
-           public View getView(int position, View convertView, ViewGroup parent) {
-
-               LayoutInflater inflater = getLayoutInflater();
-               View newView;
-
-               if (elements.get(position).getMessagetype().equals("receive")) {
-                   newView = inflater.inflate(R.layout.receivedmessages, parent, false);
-                   TextView tView = newView.findViewById(R.id.messageR);
-                   tView.setText(elements.get(position).getText());
-                   ImageView i = newView.findViewById(R.id.avatarR);
-               }
-               else{
-                   newView = inflater.inflate(R.layout.sentmessages, parent, false);
-                   TextView tView = newView.findViewById(R.id.messageS);
-                   tView.setText(elements.get(position).getText());
-                   ImageView i = newView.findViewById(R.id.avatarS);
-               }
-
-               return newView;
-
-           }
-       }
-    public class Message {
-        private String messagetype= "";
-        private String text = "placeholder";
-
-        public long getId() {
-            return id;
-        }
-
-        public void setId(long id) {
-            this.id = id;
-        }
-
+        private String type = "";
+        private String message = "";
         private long id;
-        public Message(long id , String message,String sender){
-            setText(message);
-            setMessagetype(sender);
-            this.id = id;
+
+        public Message(String type, String msg, long id){
+            setType(type);
+            setText(msg);
+            setId(id);
+        }
+
+        public void setText(String msg){ message = msg; }
+        public String getText(){ return message; }
+        public void setType(String tp){type = tp; }
+        public  String getType(){ return type; }
+        public void setId(long ID){id = ID;}
+        public long getId(){return id;}
+
+    }
+    public class MyOpener extends SQLiteOpenHelper{
+
+        protected final static String DATABASE_NAME = "MessagesDB";
+        protected final static int VERSION_NUM = 1;
+        public final static String TABLE_NAME="MESSAGES";
+        public final static String COL_TYPE="TYPE";
+        public final static String COL_MESSAGE="MESSAGE";
+        public final static String COL_ID= "_id";
+
+        public MyOpener(Context ctx) {
+            super(ctx, DATABASE_NAME, null, VERSION_NUM);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " +TABLE_NAME+ " ("+COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_TYPE + " text," + COL_MESSAGE + " text);");
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL( "DROP TABLE IF EXISTS " + TABLE_NAME);
+
+        onCreate(db);
 
 
         }
-        public String getText() {
-            return text;
-        }
 
-        public void setText(String text) {
-            this.text = text;
-        }
+        @Override
+        public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            db.execSQL( "DROP TABLE IF EXISTS " + TABLE_NAME);
 
-        public String getMessagetype() {
-            return messagetype;
-        }
-
-        public void setMessagetype(String messagetype) {
-            this.messagetype = messagetype;
+            onCreate(db);
         }
     }
+
     public void printCursor(Cursor c, int version) {
         c.moveToFirst();
         c.moveToPrevious();
@@ -186,31 +280,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         }
         c.moveToFirst();
         c.moveToPrevious();
-    }
-
-    private void loadDataFromDatabase()
-    {
-        DataBaseHelper dbOpener = new DataBaseHelper(this);
-        db = dbOpener.getWritableDatabase();
-        String [] columns = {DataBaseHelper.SID, DataBaseHelper.COLUMN_MESSAGES, DataBaseHelper.COLUMN_SENDER};
-        Cursor results = db.query(false, DataBaseHelper.MESSAGES, columns, null, null, null, null, null, null);
-        int idColumnIndex = results.getColumnIndex(DataBaseHelper.SID);
-        int messageColIndex = results.getColumnIndex(DataBaseHelper.COLUMN_MESSAGES);
-        int senderColIndex = results.getColumnIndex(DataBaseHelper.COLUMN_SENDER);
-        while(results.moveToNext())
-        {
-            long id = results.getLong(idColumnIndex);
-            String message = results.getString(messageColIndex);
-            String sender = results.getString(senderColIndex);
-            elements.add(new Message(id,message,sender));
         }
-        printCursor(results, db.getVersion());
-    }
-
-    private void deleteMessage(Message message){
-        db.delete(DataBaseHelper.MESSAGES, DataBaseHelper.SID + "=?", new String[]{Long.toString(message.getId())});
-    }
 
 
-
-    }
+}

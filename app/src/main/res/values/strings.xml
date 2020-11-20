@@ -1,17 +1,30 @@
 <resources>
-    <string name="app_name">AndroidLabs</string>
-
-    <string name="hello_message">Hello World!</string>
-
-    <string name="ButtonText">CLICK HERE</string>
-
-    <string name="LookGui">Look at my GUI</string>
-
-    <string name="CheckBox">Check this out!</string>
-
-    <string name="SwitchText">Switched on/off</string>
-
-    <string name="ToastMessage">Here is more information</string>
-
-    <string name="undotxt">Undo</string>
+    <string name="app_name">AndroidExamples</string>
+    <string name="hello"> Hello World </string>
+    <string name="ButtonText">I\'m a button</string>
+    <string name="toast_message">Here is more information</string>
+    <string name="look">Look at my GUI</string>
+    <string name="click">Click Here</string>
+    <string name="type">Type here</string>
+    <string name="switcher">Switch on/off</string>
+    <string name="check">Check this out</string>
+    <string name="switch_message">"The switch is now "</string>
+    <string name="email">Enter your email</string>
+    <string name="enter_email">Enter your email address:</string>
+    <string name="enter_pwd">Type your password:</string>
+    <string name="login">login</string>
+    <string name="name">Enter your name</string>
+    <string name="ClickTheButton">Click the button above to take a picture</string>
+    <string name="YourPicture">Your Picture:</string>
+    <string name="YourEmail">Your email:</string>
+    <string name="YourName">Your name:</string>
+    <string name="YourProfile">Your profile</string>
+    <string name="gtc">Go to chat</string>
+    <string name="send">Send</string>
+    <string name="recieve">receive</string>
+    <string name="textGoesHere" translatable="false" />
+    <string name="gtw">Go To Weather</string>
+    <string name="message_here">Message Here</string>
+    <string name="isasendmessage">Is a Send Message</string>
+    <string name="hide">hide</string>
 </resources>
