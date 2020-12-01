@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/menu">
+
+    <item
+        android:title="Poo"
+        android:orderInCategory="1"
+        android:icon="@drawable/poo"
+        android:id="@id/poo"
+        app:showAsAction="always"
+        />
+    <item
+        android:title="Star"
+        android:orderInCategory="2"
+        android:icon="@drawable/star"
+        app:showAsAction="always"
+        android:id="@id/Star"
+        />
+    <item
+        android:title="Crown"
+        android:orderInCategory="3"
+        android:icon="@drawable/crown"
+        app:showAsAction="always"
+        android:id="@id/crown"
+        />
+
+    <item
+        android:title="@string/about"
+        android:orderInCategory="1"
+        android:id="@id/overflow"
+        app:showAsAction="never"
+        />
+</menu>

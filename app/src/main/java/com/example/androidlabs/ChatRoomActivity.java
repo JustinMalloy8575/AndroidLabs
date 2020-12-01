@@ -40,13 +40,14 @@ public class ChatRoomActivity extends AppCompatActivity {
     public static final String ITEM_TYPE = "TYPE";
     public DetailsFragment dFragment;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_chat_room);
 
-       final ListView myList = (ListView) findViewById(R.id.lv);
+        final ListView myList = (ListView) findViewById(R.id.lv);
         myList.setItemsCanFocus(false);
         myList.setAdapter(la);
         EditText et = findViewById(R.id.textGoesHere);
@@ -58,33 +59,33 @@ public class ChatRoomActivity extends AppCompatActivity {
 
 
         myList.setOnItemClickListener( (list, view, pos, id) -> {
-                    //Create a bundle to pass data to the new fragment
-                    Bundle dataToPass = new Bundle();
-                    dataToPass.putString(ITEM_SELECTED, messages.get(pos).getText() );
-                    Log.e("ChatRoomActivity", "Text: " +messages.get(pos).getText());
-                    dataToPass.putInt(ITEM_POSITION, pos);
-                    dataToPass.putLong(ITEM_ID, id);
-                    dataToPass.putString(ITEM_TYPE, messages.get(pos).getType());
-                    Log.e("ChatRoomActivity", "Type: " + messages.get(pos).getType());
-                     Log.e("ChatRoomActivity", "Tablet? " + isTablet);
+            //Create a bundle to pass data to the new fragment
+            Bundle dataToPass = new Bundle();
+            dataToPass.putString(ITEM_SELECTED, messages.get(pos).getText() );
+            Log.e("ChatRoomActivity", "Text: " +messages.get(pos).getText());
+            dataToPass.putInt(ITEM_POSITION, pos);
+            dataToPass.putLong(ITEM_ID, id);
+            dataToPass.putString(ITEM_TYPE, messages.get(pos).getType());
+            Log.e("ChatRoomActivity", "Type: " + messages.get(pos).getType());
+            Log.e("ChatRoomActivity", "Tablet? " + isTablet);
             if(isTablet)
-                    {
-                        dFragment = new DetailsFragment(); //add a DetailFragment
-                        dFragment.setArguments( dataToPass ); //pass it a bundle for information
-                        getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.fltablet, dFragment) //Add the fragment in FrameLayout
-                                .commit(); //actually load the fragment. Calls onCreate() in DetailFragment
-                    }
-                    else //isPhone
-                    {
-                        Intent nextActivity = new Intent(ChatRoomActivity.this, EmptyActivity.class);
-                        nextActivity.putExtras(dataToPass); //send data to next activity
-                        startActivity(nextActivity); //make the transition
-                    }
+            {
+                dFragment = new DetailsFragment(); //add a DetailFragment
+                dFragment.setArguments( dataToPass ); //pass it a bundle for information
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fltablet, dFragment) //Add the fragment in FrameLayout
+                        .commit(); //actually load the fragment. Calls onCreate() in DetailFragment
+            }
+            else //isPhone
+            {
+                Intent nextActivity = new Intent(ChatRoomActivity.this, EmptyActivity.class);
+                nextActivity.putExtras(dataToPass); //send data to next activity
+                startActivity(nextActivity); //make the transition
+            }
 
 
-                });
+        });
 
         myList.setOnItemLongClickListener( (parent, view, pos, id) -> {
 
@@ -142,23 +143,23 @@ public class ChatRoomActivity extends AppCompatActivity {
         MyOpener dbOpener = new MyOpener(this);
         db = dbOpener.getWritableDatabase();
 
-            String [] columns = {MyOpener.COL_ID, MyOpener.COL_TYPE, MyOpener.COL_MESSAGE};
+        String [] columns = {MyOpener.COL_ID, MyOpener.COL_TYPE, MyOpener.COL_MESSAGE};
 
-            Cursor results = db.query(false, MyOpener.TABLE_NAME, columns, null, null, null, null, null, null);
+        Cursor results = db.query(false, MyOpener.TABLE_NAME, columns, null, null, null, null, null, null);
 
 
 
-            int typeColumnIndex = results.getColumnIndex(MyOpener.COL_TYPE);
-            int messageColumnIndex = results.getColumnIndex(MyOpener.COL_MESSAGE);
-            int idColIndex = results.getColumnIndex(MyOpener.COL_ID);
+        int typeColumnIndex = results.getColumnIndex(MyOpener.COL_TYPE);
+        int messageColumnIndex = results.getColumnIndex(MyOpener.COL_MESSAGE);
+        int idColIndex = results.getColumnIndex(MyOpener.COL_ID);
 
-            while (results.moveToNext()) { //starts at -1
-                String type = results.getString(typeColumnIndex);
-                String message = results.getString(messageColumnIndex);
-                long id = results.getLong(idColIndex);
-                messages.add(new Message(type, message, id));
+        while (results.moveToNext()) { //starts at -1
+            String type = results.getString(typeColumnIndex);
+            String message = results.getString(messageColumnIndex);
+            long id = results.getLong(idColIndex);
+            messages.add(new Message(type, message, id));
 
-            }
+        }
 
         printCursor(results, db.getVersion());
 
@@ -244,14 +245,14 @@ public class ChatRoomActivity extends AppCompatActivity {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " +TABLE_NAME+ " ("+COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_TYPE + " text," + COL_MESSAGE + " text);");
+            db.execSQL("CREATE TABLE " +TABLE_NAME+ " ("+COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_TYPE + " text," + COL_MESSAGE + " text);");
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL( "DROP TABLE IF EXISTS " + TABLE_NAME);
+            db.execSQL( "DROP TABLE IF EXISTS " + TABLE_NAME);
 
-        onCreate(db);
+            onCreate(db);
 
 
         }
@@ -280,7 +281,7 @@ public class ChatRoomActivity extends AppCompatActivity {
         }
         c.moveToFirst();
         c.moveToPrevious();
-        }
+    }
 
 
 }

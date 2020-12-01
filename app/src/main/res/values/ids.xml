@@ -29,5 +29,11 @@
     <item name="fragment_details_tablet" type="id" />
     <item name="empty_activity" type="id" />
     <item name="fltablet" type="id" />
+    <item name="gttbtn" type="id" />
+    <item name="Star" type="id" />
+    <item name="poo" type="id" />
+    <item name="crown" type="id" />
+    <item name="overflow" type="id" />
+    <item name="star" type="id" />
 
 </resources>

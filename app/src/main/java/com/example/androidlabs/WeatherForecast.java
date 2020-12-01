@@ -57,8 +57,8 @@ public class WeatherForecast extends AppCompatActivity {
         private String max;
         private String current;
         private Bitmap bm;
-        private String OTWeather = "http://api.openweathermap.org/data/2.5/weather?q=ottawa,ca&APPID=7e943c97096a9784391a981c4d878b22&mode=xml&units=metric";
-        private String OTUV = "http://api.openweathermap.org/data/2.5/uvi?appid=7e943c97096a9784391a981c4d878b22&lat=45.348945&lon=-75.759389";
+        private String OTWeather = "https://api.openweathermap.org/data/2.5/weather?q=ottawa,ca&APPID=7e943c97096a9784391a981c4d878b22&mode=xml&units=metric";
+        private String OTUV = "https://api.openweathermap.org/data/2.5/uvi?appid=7e943c97096a9784391a981c4d878b22&lat=45.348945&lon=-75.759389";
         private String iconName;
 
         @Override
@@ -127,7 +127,7 @@ public class WeatherForecast extends AppCompatActivity {
 
                 }else {
                     Bitmap image = null;
-                    url = new URL("http://openweathermap.org/img/w/" + iconName + ".png");
+                    url = new URL("https://openweathermap.org/img/w/" + iconName + ".png");
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.connect();
                     int responseCode = connection.getResponseCode();

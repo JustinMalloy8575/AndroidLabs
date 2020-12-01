@@ -73,6 +73,14 @@
                 android:text="@string/gtw"
                 android:id="@id/gtwbtn"
                 />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Go to Toolbar"
+                android:id="@id/gttbtn"
+                />
+
+
         </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
